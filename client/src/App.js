@@ -45,7 +45,7 @@ class App extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.state.customers ? this.state.customers.map( (c) => { return <Customer key={c.id} id={c.id} image={c.image} name={c.name} gender={c.gender} job={c.job}/> }) :
+            {this.state.customers ? this.state.customers.map( (c) => { return <Customer key={c.ID} id={c.ID} image={c.IMAGE} name={c.NAME} gender={c.GENDER} job={c.JOB}/> }) :
             <TableRow>
               <TableCell colSpan="5" align="center">
                 <CircularProgress />
