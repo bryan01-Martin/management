@@ -1,13 +1,13 @@
 import './App.css';
 import { Component } from 'react';
 import Customer from './components/Customer';
-import {Table, TableHead, TableBody, TableRow, TableCell, Paper} from '@material-ui/core';
+import {Table, TableHead, TableBody, TableRow, TableCell, Paper, CircularProgress} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX : "auto"
   },
   table: {
@@ -15,32 +15,23 @@ const styles = theme => ({
   }
 
 })
-const customers = [
-  {
-    'id':1,
-    'image': 'https://placeimg.com/64/64/1',
-    'name': '박상혁',
-    'gender': '남자',
-    'job': '개발자'
-  },
-  {
-    'id':2,
-    'image': 'https://placeimg.com/64/64/2',
-    'name': '홍길동',
-    'gender': '남자',
-    'job': '보디가드'
-  },
-  {
-    'id':3,
-    'image': 'https://placeimg.com/64/64/3',
-    'name': '이순신',
-    'gender': '남자',
-    'job': '디자이너'
-  },
-]
+
 class App extends Component {
+  state = {
+    customers : ''
+  }
+
+  componentDidMount() {
+    this.callApi().then(res => this.setState({customers: res})).catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const data = response.json();
+    return data;
+  }
   render () {
-    const {classes } = this.props
+    const { classes } = this.props
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
@@ -54,7 +45,13 @@ class App extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map( (c) => { return <Customer id={c.id} image={c.image} name={c.name} gender={c.gender} job={c.job}/> })}
+            {this.state.customers ? this.state.customers.map( (c) => { return <Customer key={c.id} id={c.id} image={c.image} name={c.name} gender={c.gender} job={c.job}/> }) :
+            <TableRow>
+              <TableCell colSpan="5" align="center">
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
+            }
           </TableBody>
         </Table>
       </Paper>
