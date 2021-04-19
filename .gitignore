@@ -3,6 +3,9 @@
 # database
 /database.json
 
+# enviroment
+.env
+
 # dependencies
 /node_modules
 /.pnp

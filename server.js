@@ -1,8 +1,10 @@
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
+require('dotenv').config()
+
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.SERVER_PORT;
 
 const dbInfo = JSON.parse(fs.readFileSync('./database.json'));
 
@@ -16,8 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 app.get('/api/customers', async (req, res) => {
     const dbconnection = await getConnection();
-    const result = await dbconnection.execute(`SELECT id, IMAGE, NAME, BIRTHDAY, GENDER, JOB FROM CUSTOMER`,);
-    console.dir(result.rows)
+    const result = await dbconnection.execute(`SELECT ID, IMAGE, NAME, BIRTHDAY, GENDER, JOB FROM CUSTOMER`,);
     res.send(result.rows);
 
 });
