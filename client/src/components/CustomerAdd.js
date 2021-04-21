@@ -21,10 +21,18 @@ export default class CustomerAdd extends Component {
             .then( ({data}) => {
                 console.log(data);
             });
+        this.setState({
+            file:null,
+            userName: '',
+            birthday: '',
+            gender: '',
+            job: '',
+            fileName: ''
+        });
+        window.location.reload();
     }
 
     handleFileChange = (e) => {
-        debugger
         this.setState({
             file: e.target.files[0],
             fileName: e.target.value
