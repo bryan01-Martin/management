@@ -19,22 +19,21 @@ const upload = multer({dest: './upload'});
 app.use('/image', express.static('./upload'));
 
 app.get('/api/customers', async (req, res) => {
-    const query = `SELECT ID, IMAGE, NAME, BIRTHDAY, GENDER, JOB FROM CUSTOMER`;
+    const query = `SELECT ID, IMAGE, NAME, BIRTHDAY, GENDER, JOB FROM CUSTOMER WHERE USE_YN = 'Y' ORDER BY ID`;
     const bindData = {}
     const result = await oracledb.execute(query, bindData);
-    console.log(result);
     res.send(result.rows);
 });
 
 app.post('/api/customers', upload.single('image'), async (req,res) => {
     
-    let query = 'INSERT INTO CUSTOMER (ID, IMAGE, NAME, BIRTHDAY, GENDER, JOB) VALUES ( NULL, :image, :name, :birthday, :gender, :job)';
-    let image = '/image/' + req.file.filename;
-    let name = req.body.name;
-    let birthday = req.body.birthday;
-    let gender = req.body.gender;
-    let job = req.body.job;
-    let bindData = {
+    const query = `INSERT INTO CUSTOMER (ID, IMAGE, NAME, BIRTHDAY, GENDER, JOB) VALUES ( NULL, :image, :name, :birthday, :gender, :job)`;
+    const image = '/image/' + req.file.filename;
+    const name = req.body.name;
+    const birthday = req.body.birthday;
+    const gender = req.body.gender;
+    const job = req.body.job;
+    const bindData = {
         'image': image,
         'name': name, 
         'birthday': birthday, 
@@ -42,7 +41,15 @@ app.post('/api/customers', upload.single('image'), async (req,res) => {
         'job':job
     };
     const result = await oracledb.execute(query, bindData);
-    res.send(result.rows)
+    res.send(result.rows);
+});
+
+app.delete('/api/customers/:id', async (req, res) => {
+    const query = `UPDATE CUSTOMER SET USE_YN = 'N' WHERE ID = :id`;
+    const bindData = {id : req.params.id};
+    const result = await oracledb.execute(query, bindData);
+    res.send(result.rows);
+
 });
 
 

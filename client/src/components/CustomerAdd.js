@@ -18,8 +18,9 @@ export default class CustomerAdd extends Component {
     handleFormSubmit =(e) => {
         e.preventDefault();
         this.addCustomer()
-            .then( ({data}) => {
+            .then( (data) => {
                 console.log(data);
+                this.props.stateRefresh();
             });
         this.setState({
             file:null,
@@ -29,7 +30,7 @@ export default class CustomerAdd extends Component {
             job: '',
             fileName: ''
         });
-        window.location.reload();
+        
     }
 
     handleFileChange = (e) => {

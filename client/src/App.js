@@ -18,8 +18,20 @@ const styles = theme => ({
 })
 
 class App extends Component {
-  state = {
-    customers : ''
+ 
+  constructor(props) {
+    super(props);
+    this.stateRefresh = this.stateRefresh.bind(this);
+    this.state = {
+      customers: ''
+    }
+  }
+
+  stateRefresh() {
+    this.setState({
+      customers: ''
+    });
+    this.callApi().then(res => this.setState({customers: res})).catch(err => console.log(err));
   }
 
   componentDidMount() {
@@ -42,14 +54,16 @@ class App extends Component {
                 <TableCell>번호</TableCell>
                 <TableCell>이미지</TableCell>
                 <TableCell>이름</TableCell>
+                <TableCell>생년월일</TableCell>
                 <TableCell>성별</TableCell>
                 <TableCell>직업</TableCell>
+                <TableCell>설정</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.customers ? this.state.customers.map( (c) => { return <Customer key={c.ID} id={c.ID} image={c.IMAGE} name={c.NAME} gender={c.GENDER} job={c.JOB}/> }) :
+              {this.state.customers ? this.state.customers.map( (c) => { return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} job={c.job}/> }) :
               <TableRow>
-                <TableCell colSpan="5" align="center">
+                <TableCell colSpan="7" align="center">
                   <CircularProgress />
                 </TableCell>
               </TableRow>
@@ -57,7 +71,7 @@ class App extends Component {
             </TableBody>
           </Table>
         </Paper>
-        <CustomerAdd/>
+        <CustomerAdd stateRefresh={this.stateRefresh}/>
       </>
     )
   }

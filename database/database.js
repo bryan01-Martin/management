@@ -8,28 +8,30 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 oracledb.autoCommit = true;
 
 class Database {
-    isAutoCommit = true;
+    
     connection = async () => {
         return await oracledb.getConnection(dbConfig);;
     }
     release = async (connection) => {
-        console.log('reaease');
+        console.log('reaease connection');
         connection.release();
-        // this.isAutoCommit = true;
     }
-    execute = async (query, bindData, transactional) => {
-        // transactional = transactional | this.isAutoCommit;
-        // if(!transactional) {
-        //     isAutoCommit = transactional;
-        // }
+    execute = async (query, bindData) => {
         const toCamelCase = (str) => str.toLowerCase().replace(/\_(.)/gi, (m, c) => c.toUpperCase());
-        
         const conn = await this.connection();
-        const data = await conn.execute(query, bindData);
-        
+        let data = {}
+        await conn.execute(query, bindData).then((result) => {
+            if(result.rows != undefined) {
+                result.rows.forEach((row, index) => {
+                    result.rows[index] = Object.fromEntries( Object.entries(row).map( ([key, value]) => [toCamelCase(key), value]) );
+                });
+            }
+            data = result;
+        }).catch(err => {
+            console.log(err);
+        });
         this.release(conn);
         return data;
-        
     }
 }
 
